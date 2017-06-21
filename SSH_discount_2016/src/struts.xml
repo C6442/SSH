@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+	<package name="p" extends="struts-default">
+		<action name="userAction" class="com.softeem.action.UserAction">
+			<!-- 注册 -->
+			<result name="saveUser">/success.jsp</result>
+			<result name="regerror">/regerror.jsp</result>
+			<!-- 登录成功 -->
+			<result name="loginsuccess" type="chain">
+				<param name="actionName">goodsAction</param>
+				<param name="method">fenyeGoods</param>
+			</result>
+			
+			<result name="loginout">/main.jsp</result>
+			<result name="loginerror">/loginerror.jsp</result>
+			
+			<!-- 个人中心 -->
+			<result name="findOneUser">/personal.jsp</result>
+			
+			<!-- 修改个人信息 -->
+			<result name="updateUser" type="chain">
+				<param name="actionName">userAction</param>
+				<param name="method">login</param>
+				<param name="user">${user}</param>
+			
+			</result>
+			<!-- 充值成功 -->
+			<result name="chongzhi">/user/chongcg.jsp</result>
+			
+			<!-- 商家查下单了的用户 -->
+			<result name="sellFindOneUser">/user/sellFindOneUser.jsp</result>
+			<result name="error">/error.jsp</result>
+		</action>
+		<!-- 管理员功能 -->
+		<action name="adminAction" class="com.softeem.action.AdminAction">
+			<result name="adminlogin">/admin/admin.jsp</result>
+			<!-- 各种查询 -->
+			<result name="findAllNotAudited">/admin/notAudited.jsp</result>
+			<result name="fenyeUser">/admin/allUser.jsp</result>
+			
+			<!-- pass和nopass是审核 -->
+			<result name="pass" type="chain">
+				<param name="actionName">adminAction</param>
+				<param name="method">fenyeUser</param>
+				<param name="user.userflag">${user.userflag}</param>
+				<param name="pageNow">${pageNow}</param>
+			</result>
+			<result name="nopass" type="chain">
+				<param name="actionName">adminAction</param>
+				<param name="method">fenyeUser</param>
+				<param name="user.userflag">${user.userflag}</param>
+				<param name="pageNow">${pageNow}</param>
+			</result>
+			<!-- 管理员删除用户 -->
+			<result name="delUser" type="chain">
+				<param name="actionName">adminAction</param>
+				<param name="method">fenyeUser</param>
+				<param name="user.userflag">${user.userflag}</param>
+				<param name="pageNow">${pageNow}</param>
+			</result>
+			
+			
+			
+			<result name="error">/error.jsp</result>
+		</action>
+		
+		<!-- 商品部分 -->
+		<action name="goodsAction" class="com.softeem.action.GoodsAction">
+			<interceptor-ref name="fileUpload">
+            <param name="allowedTypes">image/bmp,image/png,image/gif,image/jpeg,image/jpg,image/x-png, image/pjpeg</param>
+         	</interceptor-ref>	
+         	<interceptor-ref name="defaultStack"></interceptor-ref>
+			<result name="saveGoods">/goods/success.jsp</result>
+			<!-- 查询全部  首页 -->
+			<result name="fenyeGoods">/main.jsp</result>
+			<!-- 管理员查看商品 -->
+			<result name="fenyeAllGoods">/admin/adminShowAllGoods.jsp</result>
+			<!-- 查看一件商品 同时查询该商品的评价 并查看回复 -->
+			<result name="findOneGoods">/goods/showOneGoods.jsp</result>
+			
+			<!-- 商家查看自己的商品 -->
+			<result name="findAllGoods">/goods/findAllGoods.jsp</result>
+			
+			<!-- 修改操作 -->
+			<result name="findGoods">/goods/updateGoods.jsp</result>
+			<result name="updateGoods">/personal.jsp</result>
+			
+			<!-- 删除商品 -->
+			<result name="deleteGoods">/personal.jsp</result>
+			<!-- 评价时查看商品 -->
+			<result name="pingOneGoods">/user/pingjia.jsp</result>
+			
+			<!-- 模糊查询查看商品 -->
+			<result name="findSameGoods">/main.jsp</result>
+			
+			<result name="error">/error.jsp</result>
+		</action>
+		
+		<!-- 购物车操作 -->
+		<action name="goodsCarAction" class="com.softeem.action.GoodsCarAction">
+			<!-- 加入购物车 -->
+			<result name="saveGoodsCar">/goods/saveGoodsCar.jsp</result>
+			<!-- 查看购物车的 -->
+			<result name="findAllGoodsCar">/goods/goodsCar.jsp</result>
+			<!-- 删除购物车的东西 -->
+			<result name="deleteGoodsCar" type="chain">
+				<param name="actionName">goodsCarAction</param>
+				<param name="method">findAllGoodsCar</param>
+				<param name="gcuserid">${gcuserid}</param>
+			</result>
+			<!-- 下单时确认购物车里面的东西 -->
+			<result name="findOneGoodsCar">/goods/showOneGoodsCar.jsp</result>
+			
+		</action>
+		
+		<!-- 订单操作 -->
+		<action name="orderListAction" class="com.softeem.action.OrderListAction">
+			<!-- 添加订单 -->
+			<result name="saveOrder">/personal.jsp</result>
+			<!-- 买家查看订单 -->
+			<result name="findAllOrder">/user/showOrderList.jsp</result>
+			<!-- 商家查看订单 -->
+			<result name="findOrder">/user/showSellOrderList.jsp</result>
+			<!-- 操作订单 -->
+			<result name="updateOrder2">/personal.jsp</result>
+			<result name="updateOrder3">/personal.jsp</result>
+			<result name="error">/error.jsp</result>
+		</action>
+		
+		<!-- 评价 -->
+		<action name="pingAction" class="com.softeem.action.PingAction">
+			<result name="savePing">/user/pingcg.jsp</result>
+			
+			<!-- 回复查看评价 -->
+			<result name="findOnePing">/user/huifu.jsp</result>
+			<!-- 自己查看自己的评价 -->
+			<result name="findMyPing">/user/showPing.jsp</result>
+			<!-- 查看某商品的全部评价 -->
+			<result name="fenyePing">/goods/showPing.jsp</result>
+			<result name="error">/error.jsp</result>
+		</action>
+		
+		<!-- 回复 -->
+		<action name="replyAction" class="com.softeem.action.ReplyAction">
+			<result name="saveReply">main.jsp</result>
+			<result name="findMyReply">/user/showReply.jsp</result>
+			<result name="error">/error.jsp</result>
+		</action>
+		
+		
+	</package>
+
+</struts>    

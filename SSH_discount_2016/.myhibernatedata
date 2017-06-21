@@ -1,0 +1,17 @@
+#MyEclipse Hibernate Properties
+#Thu Jan 07 17:13:21 CST 2016
+genVersionTag=false
+sessionFactoryName=com.softeem.util.HibernateSessionFactory
+genAnnotations=false
+configFile=/SSH_discount_2016/src/hibernate.cfg.xml
+reStrategyClass=
+sessionFactoryId=
+profile=
+detectM2M=false
+genBasicCompId=false
+keyGenerator=
+createConfigFile=true
+basePersistenceClass=
+detectO2O=false
+useJavaTypes=true
+reSettingsFile=

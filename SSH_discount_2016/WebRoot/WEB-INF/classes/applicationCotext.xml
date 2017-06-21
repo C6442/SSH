@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd"
+	default-autowire="byName"
+		>
+		
+		<context:annotation-config/>
+		<context:component-scan base-package="com.softeem"/>
+		
+<!-- 读取属性文件 -->
+	<bean class="org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer">
+		<property name="locations">
+			<value>classpath:jdbc.properties</value>
+		</property>
+	</bean>
+	
+	<!-- 配置数据源 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="${jdbc.driver}"></property>
+	    <property name="url"  value="${jdbc.url}"></property>
+	    <property name="username"  value="${jdbc.username}"></property>
+	    <property name="password"  value="${jdbc.password}"></property>
+	    
+	    <!-- 最长闲置时间  超过这个时间  则当前连接被丢弃 -->
+	    <property name="maxWait"  value="300"></property>
+	    <!-- 最大访问数(同一时间) -->
+	    <property name="maxActive"  value="200"></property>
+	    <!-- 最多等待连接数据 -->
+	    <property name="maxIdle"  value="20"></property>
+	 </bean>
+		
+	<!-- 添加hiberntae的核心配置 -->
+	<bean  id="sessionFactory"   class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+	    <property name="dataSource"  ref="dataSource"></property>
+	    <!-- 配置对指定包扫描(识别实体类@Entity) -->
+	    <property name="packagesToScan">
+	        <list>
+	           <value>com.softeem.pojo</value>
+	        </list>
+	    </property>
+	    
+	    <property name="hibernateProperties">
+	       <props>
+	           <prop key="hibernate.show_sql">true</prop>
+	           <prop key="hibernate.format_sql">true</prop>
+	           <prop key="hibernate.hbm2ddl.auto">update</prop>
+	            <prop key="hibernate.dialect">org.hibernate.dialect.SQLServerDialect</prop>
+	           <prop key="hibernate.current_session_context_class">thread</prop>
+	       </props>
+	    </property>
+	</bean>
+	
+	<!-- 当前实现类中  并不存在sessionFactory属性,但是该类继承HibernateDaoSupport
+	后,其父类需要sessionFactory 那么我们可以为当前对象设置sessionFactory属性
+	以及属性值(在配置文件中) -->
+	<!--  <bean  id="teacherDAO"   class="com.softeem.dao.impl.TeacherDAOImpl">
+	     <property name="sessionFactory"  ref="sessionFactory"></property>
+	  </bean>
+	
+	  <bean  id="teacherService"  class="com.softeem.service.impl.TeacherServiceImpl">
+	    <property name="teacherDAO"  ref="teacherDAO"></property>
+	  </bean>
+	    
+	  <bean  id="regAction"  class="com.softeem.action.RegAction">
+	    <property name="teacherService"  ref="teacherService"></property>  
+	  </bean> -->
+	   
+	  <!-- 订单 -->
+	  <bean  id="orderListDAO"   class="com.softeem.dao.impl.OrderListDAOImpl">
+	     <property name="sessionFactory"  ref="sessionFactory"></property>
+	  </bean>
+	
+	  <bean  id="orderListSerivce"  class="com.softeem.service.impl.OrderListServiceImpl">
+	    <property name="orderListDAO"  ref="orderListDAO"></property>
+	  </bean>
+	    
+	  <bean  id="orderListAction"  class="com.softeem.action.OrderListAction">
+	    <property name="orderListSerivce"  ref="orderListSerivce"></property>  
+	  </bean> 
+	   
+	   
+	   <!-- 评价 -->
+	  <bean  id="pingDAO"   class="com.softeem.dao.impl.PingDAOImpl">
+	     <property name="sessionFactory"  ref="sessionFactory"></property>
+	  </bean>
+	
+	  <bean  id="pingService"  class="com.softeem.service.impl.PingServiceImpl">
+	    <property name="pingDAO"  ref="pingDAO"></property>
+	  </bean>
+	    
+	  <bean  id="pingAction"  class="com.softeem.action.PingAction">
+	    <property name="pingService"  ref="pingService"></property>  
+	  </bean> 
+	   
+	    <!-- 回复 -->
+	  <bean  id="replyDAO"   class="com.softeem.dao.impl.ReplyDAOImpl">
+	     <property name="sessionFactory"  ref="sessionFactory"></property>
+	  </bean>
+	
+	  <bean  id="replyService"  class="com.softeem.service.impl.ReplyServiceImpl">
+	    <property name="replyDAO"  ref="replyDAO"></property>
+	  </bean>
+	    
+	  <bean  id="replyAction"  class="com.softeem.action.ReplyAction">
+	    <property name="replyService"  ref="replyService"></property>  
+	  </bean> 
+	   
+	  <!-- 学生的 -->
+	 <!--  <bean  id="studentDAO"   class="com.softeem.dao.impl.StudentDAOImpl">
+	     <property name="sessionFactory"  ref="sessionFactory"></property>
+	  </bean>
+	
+	  <bean  id="studentService"  class="com.softeem.service.impl.StudentServiceImpl">
+	    <property name="studentDAO"  ref="studentDAO"></property>
+	  </bean>
+	    
+	  <bean  id="regAction2"  class="com.softeem.action.RegAction">
+	    <property name="studentService"  ref="studentService"></property>  
+	  </bean> -->
+	  
+	  <!-- 配置事物的组件(Spring 提供的对于hibernate事物的管理类) 
+	    配置事物管理器
+	    在事物管理器中配置哪些SessionFactory 或其它与数据库相关的类需要进行事务管理 
+	    本例为:
+	    管理上配置sessionFactory
+	  HibernateTransactionManager 事务管理器类   由Spring提供的  
+	  -->
+	  <bean  id="transactionManager"  
+	      class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+	   <!-- 该sessionFactory 是HibernateTransactionManager类的属性名  必须这样写 -->
+	      <property name="sessionFactory" >
+	      <!-- 指定需要管理事务的 sessionFactory-->
+	        <ref  bean="sessionFactory"/>
+	      </property>
+	  </bean>
+	  
+	  <!-- 切入事物 
+	  
+	  -->
+	  <aop:config>
+	     <aop:pointcut expression="execution(* com.softeem.service..*.*(..))" 
+	        id="buinessService"/>
+	        <aop:advisor advice-ref="txManager"  pointcut-ref="buinessService"/>
+	  </aop:config>
+	  
+	  <!-- 配置通知 -->
+	  <tx:advice  id="txManager"  transaction-manager="transactionManager">
+	    <!-- 指定需要被Spring使用事物管理的方法  -->
+	    <tx:attributes>
+	         <tx:method name="*"  read-only="false"/>
+	    </tx:attributes>
+	  </tx:advice>
+	
+	
+</beans>
